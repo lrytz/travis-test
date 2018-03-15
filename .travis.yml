@@ -3,8 +3,5 @@ jdk: openjdk8
 
 script:
   - echo "nix da"
-
-notifications:
-  webhooks:
-    - https://scala-ci.typesafe.com/benchq/webhooks/travis
-    - https://webhook.site/309dfde1-4365-4e13-adaf-b20c2d3ebd43
+  - echo "$SBT_OPTS"
+  - cat /etc/sbt/sbtopts
