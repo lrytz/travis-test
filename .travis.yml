@@ -6,3 +6,7 @@ script:
   - source fun
   - foo
   - echo "done"
+  - echo 3
+    false
+    echo 4
+  - echo "still"
