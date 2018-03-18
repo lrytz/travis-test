@@ -1,5 +1,7 @@
 function foo() {
-  echo 1
-  false
-  echo 2
+  if [ "$1" = "0" ]; then
+    true
+  else
+    false
+  fi
 }
