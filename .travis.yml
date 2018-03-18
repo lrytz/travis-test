@@ -2,6 +2,7 @@ language: scala
 jdk: openjdk8
 
 script:
+  - set -e
   - echo "nix da"
   - source fun
   - foo
