@@ -4,4 +4,5 @@ function foo() {
   else
     false
   fi
+  echo "foo done"
 }
