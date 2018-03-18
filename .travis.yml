@@ -2,13 +2,10 @@ language: scala
 jdk: openjdk8
 
 script:
-  - set -e
-  - echo "nix da"
   - source fun
-#  - foo
-  - echo "done"
-  - |
-    echo 3
-    false
-    echo 4
-  - echo "still"
+  - if ( foo 0 ); then echo a; else echo b; fi
+  - if ( foo 1 ); then echo c; else echo d; fi
+  - set -e
+  - if ( foo 0 ); then echo e; else echo f; fi
+  - if ( foo 1 ); then echo g; else echo h; fi
+  - echo done
