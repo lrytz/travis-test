@@ -5,7 +5,7 @@ script:
   - set -e
   - echo "nix da"
   - source fun
-  - foo
+#  - foo
   - echo "done"
   - |
     echo 3
