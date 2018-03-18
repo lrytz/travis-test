@@ -3,5 +3,6 @@ jdk: openjdk8
 
 script:
   - echo "nix da"
-  - echo "$SBT_OPTS"
-  - cat /etc/sbt/sbtopts
+  - source fun
+  - foo
+  - echo "done"
