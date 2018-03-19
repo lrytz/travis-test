@@ -2,6 +2,8 @@ language: scala
 jdk: openjdk8
 
 before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libcairo2 expat
   - curl -O https://raw.githubusercontent.com/scala/graphviz-deb/master/graphviz_2.28.0-1_amd64.deb
   - sudo dpkg -i graphviz_2.28.0-1_amd64.deb
 
