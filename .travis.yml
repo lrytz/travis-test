@@ -1,8 +1,22 @@
 language: scala
 jdk: openjdk8
 
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y graphviz
+
 script:
   - dot -V
   - sbt doc
   - tar -czvf api.tgz target/scala-2.12/api
   - curl --upload-file ./api.tgz https://transfer.sh/api.tgz
+
+cache:
+  directories:
+    - $HOME/.ivy2/cache
+    - $HOME/.sbt
+
+before_cache:
+  # Cleanup the cached directories to avoid unnecessary cache updates
+  - find $HOME/.ivy2/cache -name "ivydata-*.properties" -print -delete
+  - find $HOME/.sbt        -name "*.lock"               -print -delete
