@@ -2,4 +2,7 @@ language: scala
 jdk: openjdk8
 
 script:
+  - dot -V
   - sbt doc
+  - tar -czvf api.tgz target/scala-2.12/api
+  - curl --upload-file ./api.tgz https://transfer.sh/api.tgz
