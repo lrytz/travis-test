@@ -2,18 +2,4 @@ language: scala
 jdk: openjdk8
 
 script:
-  - source fun
-  - if ( foo 0 ); then echo a; else echo b; fi
-  - if ( foo 1 ); then echo c; else echo d; fi
-  - ( foo 0 )
-  - ( foo 1 )
-  - foo 0
-  - foo 1
-  - set -e
-  - if ( foo 0 ); then echo e; else echo f; fi
-  - if ( foo 1 ); then echo g; else echo h; fi
-  - ( foo 0 )
-  - ( foo 1 )
-  - foo 0
-  - foo 1
-  - echo done
+  - sbt doc
