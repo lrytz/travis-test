@@ -1,22 +1,21 @@
 language: scala
 jdk: openjdk8
 
-before_install:
-  - sudo apt-get -qq update
-  - sudo apt-get install -y libcairo2 expat
-  - curl -O https://raw.githubusercontent.com/scala/graphviz-deb/master/graphviz_2.28.0-1_amd64.deb
-  - sudo dpkg -i graphviz_2.28.0-1_amd64.deb
-
-script:
-  - dot -V
-  - sbt doc
-  - tar -czvf api.tgz target/scala-2.12/api
-  - curl --upload-file ./api.tgz https://transfer.sh/api.tgz
+jobs:
+  include:
+    - stage: build
+      script:
+        - sbt clean package
+    - stage: rebuild
+      script:
+        #- ./set-last-modified
+        - sbt package
 
 cache:
   directories:
     - $HOME/.ivy2/cache
     - $HOME/.sbt
+    - target/
 
 before_cache:
   # Cleanup the cached directories to avoid unnecessary cache updates

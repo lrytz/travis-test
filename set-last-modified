@@ -1,0 +1,20 @@
+#!/bin/bash -e
+
+declare -a fileAndStamp
+
+find target -name 'inc_compile*' | while read incFile; do
+  echo "touches for $incFile"
+  lastMod=$(cat "$incFile" | grep "lastModified([0-9]\+)")
+
+  # while, not for, as to avoid setting IFS, which would break the array creation below
+  echo "$lastMod" | while read l; do
+    fileAndStamp=($(echo $l | sed -E 's/(.*) -> lastModified\((.*)000\)/\1 \2/'))
+
+    # for macOS
+    # touch -mt "$(date -r ${fileAndStamp[1]} +'%Y%m%d%H%M.%S')" ${fileAndStamp[0]} || :
+
+    # for linux; sudo because rt.jar is not user-writable
+    echo "touch -m -t $(date -d @${fileAndStamp[1]} +'%Y%m%d%H%M.%S') ${fileAndStamp[0]}"
+    sudo touch -m -t "$(date -d @${fileAndStamp[1]} +'%Y%m%d%H%M.%S')" ${fileAndStamp[0]} || :
+  done
+done
