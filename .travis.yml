@@ -6,9 +6,20 @@ jobs:
     - stage: build
       script:
         - sbt clean package
+        - stat -c '%y' target/scala-2.12/classes/A.class
     - stage: rebuild
       script:
-        - ./set-last-modified
+        - stat -c '%y' target/scala-2.12/classes/A.class
+        - sbt package
+        #
+        - stat -c '%y' target/scala-2.12/classes/A.class
+        - touch target/scala-2.12/classes/A.class
+        - stat -c '%y' target/scala-2.12/classes/A.class
+        - sbt package
+        #
+        - stat -c '%y' target/scala-2.12/classes/A.class
+        - sudo touch target/scala-2.12/classes/A.class
+        - stat -c '%y' target/scala-2.12/classes/A.class
         - sbt package
 
 cache:
