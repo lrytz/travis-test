@@ -8,7 +8,7 @@ jobs:
         - sbt clean package
     - stage: rebuild
       script:
-        #- ./set-last-modified
+        - ./set-last-modified
         - sbt package
 
 cache:
