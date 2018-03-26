@@ -1,32 +1,13 @@
 language: scala
 jdk: openjdk8
 
-jobs:
-  include:
-    - stage: build
-      script:
-        - sbt clean package
-        - stat -c '%y' target/scala-2.12/classes/A.class
-    - stage: rebuild
-      script:
-        - stat -c '%y' target/scala-2.12/classes/A.class
-        - sbt package
-        #
-        - stat -c '%y' target/scala-2.12/classes/A.class
-        - touch target/scala-2.12/classes/A.class
-        - stat -c '%y' target/scala-2.12/classes/A.class
-        - sbt package
-        #
-        - stat -c '%y' target/scala-2.12/classes/A.class
-        - sudo touch target/scala-2.12/classes/A.class
-        - stat -c '%y' target/scala-2.12/classes/A.class
-        - sbt package
+script:
+  - sbt publishLocal
 
 cache:
   directories:
     - $HOME/.ivy2/cache
     - $HOME/.sbt
-    - target/
 
 before_cache:
   # Cleanup the cached directories to avoid unnecessary cache updates
