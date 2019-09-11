@@ -23,4 +23,4 @@ if [[ "$TRAVIS_TAG" =~ $tagPat ]]; then
   fi
 fi
 
-sbt "$setTagScalaVersion" publishLocal "$releaseTask"
+sbt "$setTagScalaVersion" publishLocal $releaseTask
