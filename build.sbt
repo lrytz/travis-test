@@ -8,3 +8,7 @@ developers := List(
     "Lukas Rytz",
     "",
     url("https://github.com/lrytz")))
+
+// drop # stuff after tag
+dynverGitDescribeOutput in ThisBuild ~= (_.map(dv =>
+  dv.copy(ref = sbtdynver.GitRef(dv.ref.value.split('#').head))))

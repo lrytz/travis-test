@@ -3,18 +3,22 @@
 set -ex
 
 verPat="[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)?"
-tagPat="^v$verPat(#$verPat#[0-9]+)?$"
+tagPat="^v$verPat(#$verPat)?$"
 
-if [[ "$RELEASE" == "true" && "$TRAVIS_TAG" =~ $tagPat ]]; then
-  releaseTask="ci-release"
-
-  tagScalaVer=$(echo $TRAVIS_TAG | sed s/[^#]*// | sed s/^#//)
-  if [[ "$tagScalaVer" != "" ]]; then
-    if [[ "$TRAVIS_JOB_NUMBER" =~ "[0-9]+\.1" ]]; then
-      setTagScalaVersion='set every scalaVersion := "'$tagScalaVer'"'
-    else
-      echo "The release for Scala $tagScalaVer is built by the job in the travis job matrix"
-      exit 0
+if [[ "$TRAVIS_TAG" =~ $tagPat ]]; then
+  if [[ "$RELEASE" != "true" ]]; then
+    echo "Not releasing on Java $ADOPTOPENJDK with Scala $TRAVIS_SCALA_VERSION"
+    exit 0
+  else
+    releaseTask="ci-release"
+    tagScalaVer=$(echo $TRAVIS_TAG | sed s/[^#]*// | sed s/^#//)
+    if [[ "$tagScalaVer" != "" ]]; then
+      if [[ "$TRAVIS_JOB_NUMBER" =~ "[0-9]+\.1" ]]; then
+        setTagScalaVersion='set every scalaVersion := "'$tagScalaVer'"'
+      else
+        echo "The release for Scala $tagScalaVer is built by the first job in the travis job matrix"
+        exit 0
+      fi
     fi
   fi
 fi
