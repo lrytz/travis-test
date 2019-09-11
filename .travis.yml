@@ -1,17 +1,12 @@
 language: scala
 
 scala:
-  - 2.13.0
   - 2.12.10
+  - 2.13.0
 
 env:
   - ADOPTOPENJDK=8
   - ADOPTOPENJDK=11
-
-stages:
-  - name: test # default stage
-  - name: release
-    if: NOT fork AND tag IS present
 
 before_install:
   - git fetch --tags # get all tags for sbt-dynver
@@ -28,12 +23,8 @@ install:
   - javac -J-Xmx32m -version
 
 script:
-  - sbt publishLocal
-
-jobs:
-  include:
-    - stage: release
-      script: sbt ci-release
+  - if [[ "$ADOPTOPENJDK" == "8" ]]; then export RELEASE=true; fi
+  - ./build.sh
 
 before_cache:
   - find $HOME/.sbt -name "*.lock" | xargs rm
