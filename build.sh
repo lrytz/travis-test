@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 verPat="[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)?"
 tagPat="^v$verPat(#$verPat#[0-9]+)?$"
