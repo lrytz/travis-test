@@ -9,7 +9,7 @@ if [[ "$RELEASE" == "true" && "$TRAVIS_TAG" =~ $tagPat ]]; then
   releaseTask="ci-release"
 
   tagScalaVer=$(echo $TRAVIS_TAG | sed s/[^#]*// | sed s/^#//)
-  if [[ "tagScalaVer" != "" ]]; then
+  if [[ "$tagScalaVer" != "" ]]; then
     if [[ "$TRAVIS_JOB_NUMBER" =~ "[0-9]+\.1" ]]; then
       setTagScalaVersion='set every scalaVersion := "'$tagScalaVer'"'
     else
