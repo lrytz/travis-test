@@ -39,8 +39,8 @@ if [[ "$TRAVIS_TAG" =~ $tagPat ]]; then
 fi
 
 # default is +publishSigned; we cross-build with travis jobs, not sbt's crossScalaVersions
-# reload first to work around https://github.com/olafurpg/sbt-ci-release/issues/64
-export CI_RELEASE="; reload; publishSigned"
+# re-define pgp files to work around https://github.com/olafurpg/sbt-ci-release/issues/64
+export CI_RELEASE="; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value; publishSigned"
 export CI_SNAPSHOT_RELEASE="publish"
 
 # default is sonatypeBundleRelease, which closes and releases the staging repo
