@@ -32,9 +32,7 @@ install:
   - javac -J-Xmx32m -version
   - git fetch --tags # get all tags for sbt-dynver
 
-script:
-  - if [[ "$ADOPTOPENJDK" == "8" && "$TRAVIS_SCALA_VERSION" =~ 2\.1[123]\..* ]]; then export RELEASE=true; fi
-  - ./build.sh
+script: ./build.sh
 
 before_cache:
   - find $HOME/.sbt -name "*.lock" | xargs rm

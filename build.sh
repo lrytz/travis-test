@@ -16,9 +16,16 @@ set -ex
 # matrix builds the release. All other jobs are stopped. Make sure that the first job uses
 # the desired JVM version.
 
+if [[ "$TRAVIS_TAG" =~ ^.*#.*$ && "$ADOPTOPENJDK" == "8" && "$TRAVIS_SCALA_VERSION" = ^2\.13\.[0-9]+$ ]]; then
+  # tag defines a Scala version. We pick the jobs of one Scala version (2.13.x) to do the releases.
+  export RELEASE_JOB=true;
+elif [[ "$ADOPTOPENJDK" == "8" && "$TRAVIS_SCALA_VERSION" =~ ^2\.1[123]\..*$ ]]; then
+  # tag that needs to be cross-built. We release on JDK 8 for Scala 2.x
+  export RELEASE_JOB=true;
+fi
+
 verPat="[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)?"
 tagPat="^v$verPat(#$verPat)?$"
-firstJobPattern="^[0-9]+\.1$"
 
 if [[ "$SCALAJS_VERSION" == "" ]]; then
   projectPrefix="moduleTest"
@@ -27,19 +34,14 @@ else
 fi
 
 if [[ "$TRAVIS_TAG" =~ $tagPat ]]; then
-  if [[ "$RELEASE" != "true" ]]; then
+  if [[ "$RELEASE_JOB" != "true" ]]; then
     echo "Not releasing on Java $ADOPTOPENJDK with Scala $TRAVIS_SCALA_VERSION"
     exit 0
   else
     releaseTask="$projectPrefix/ci-release"
     tagScalaVer=$(echo $TRAVIS_TAG | sed s/[^#]*// | sed s/^#//)
     if [[ "$tagScalaVer" != "" ]]; then
-      if [[ "$TRAVIS_JOB_NUMBER" =~ $firstJobPattern ]]; then
-        setTagScalaVersion='set every scalaVersion := "'$tagScalaVer'"'
-      else
-        echo "The release for Scala $tagScalaVer is built by the first job in the travis job matrix"
-        exit 0
-      fi
+      setTagScalaVersion='set every scalaVersion := "'$tagScalaVer'"'
     fi
   fi
 fi
