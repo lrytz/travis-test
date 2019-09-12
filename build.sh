@@ -24,21 +24,21 @@ elif [[ "$ADOPTOPENJDK" == "8" && "$TRAVIS_SCALA_VERSION" =~ ^2\.1[123]\..*$ ]];
   export RELEASE_JOB=true;
 fi
 
-verPat="[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)?"
-tagPat="^v$verPat(#$verPat)?$"
-
 if [[ "$SCALAJS_VERSION" == "" ]]; then
   projectPrefix="moduleTest"
 else
   projectPrefix="moduleTestJS"
 fi
 
+verPat="[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)?"
+tagPat="^v$verPat(#$verPat)?$"
+
 if [[ "$TRAVIS_TAG" =~ $tagPat ]]; then
   if [[ "$RELEASE_JOB" != "true" ]]; then
     echo "Not releasing on Java $ADOPTOPENJDK with Scala $TRAVIS_SCALA_VERSION"
     exit 0
   else
-    releaseTask="$projectPrefix/ci-release"
+    releaseTask="ci-release"
     tagScalaVer=$(echo $TRAVIS_TAG | sed s/[^#]*// | sed s/^#//)
     if [[ "$tagScalaVer" != "" ]]; then
       setTagScalaVersion='set every scalaVersion := "'$tagScalaVer'"'
@@ -48,8 +48,8 @@ fi
 
 # default is +publishSigned; we cross-build with travis jobs, not sbt's crossScalaVersions
 # re-define pgp files to work around https://github.com/olafurpg/sbt-ci-release/issues/64
-export CI_RELEASE="; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value; publishSigned"
-export CI_SNAPSHOT_RELEASE="publish"
+export CI_RELEASE="; set pgpSecretRing := pgpSecretRing.value; set pgpPublicRing := pgpPublicRing.value; $projectPrefix/publishSigned"
+export CI_SNAPSHOT_RELEASE="$projectPrefix/publish"
 
 # default is sonatypeBundleRelease, which closes and releases the staging repo
 # see https://github.com/xerial/sbt-sonatype#commands
