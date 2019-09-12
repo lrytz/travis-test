@@ -9,7 +9,6 @@ env:
   - ADOPTOPENJDK=11
 
 before_install:
-  - git fetch --tags # get all tags for sbt-dynver
   # adding $HOME/.sdkman to cache would create an empty directory, which interferes with the initial installation
   - "[[ -d $HOME/.sdkman/bin/ ]] || rm -rf $HOME/.sdkman/"
   - curl -sL https://get.sdkman.io | bash
@@ -21,6 +20,7 @@ install:
   - unset JAVA_HOME
   - java -Xmx32m -version
   - javac -J-Xmx32m -version
+  - git fetch --tags # get all tags for sbt-dynver
 
 script:
   - if [[ "$ADOPTOPENJDK" == "8" ]]; then export RELEASE=true; fi

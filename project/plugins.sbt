@@ -1,2 +1,1 @@
-addSbtPlugin("com.dwijnand" % "sbt-travisci" % "1.2.0")   // set scalaVersion and crossScalaVersions
-addSbtPlugin("com.geirsson" % "sbt-ci-release" % "1.3.1") // set version, scmInfo, publishing settings
+addSbtPlugin("org.scala-lang.modules" % "sbt-scala-module" % "2.1.0-M1")
