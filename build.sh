@@ -34,10 +34,12 @@ isTagScalaReleaseJob() {
   fi
 }
 
-if [[ "$SCALAJS_VERSION" == "" ]]; then
-  projectPrefix="moduleTest"
-else
+if [[ "$SCALAJS_VERSION" != "" ]]; then
   projectPrefix="moduleTestJS"
+elif [[ "$SCALANATIVE_VERSION" != "" ]]; then
+  projectPrefix="moduleTestNative"
+else
+  projectPrefix="moduleTest"
 fi
 
 verPat="[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)?"
