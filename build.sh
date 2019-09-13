@@ -16,13 +16,23 @@ set -ex
 # matrix builds the release. All other jobs are stopped. Make sure that the first job uses
 # the desired JVM version.
 
-if [[ "$TRAVIS_TAG" =~ ^.*#.*$ && "$ADOPTOPENJDK" == "8" && "$TRAVIS_SCALA_VERSION" = ^2\.13\.[0-9]+$ ]]; then
-  # tag defines a Scala version. We pick the jobs of one Scala version (2.13.x) to do the releases.
-  export RELEASE_JOB=true;
-elif [[ "$ADOPTOPENJDK" == "8" && "$TRAVIS_SCALA_VERSION" =~ ^2\.1[123]\..*$ ]]; then
-  # tag that needs to be cross-built. We release on JDK 8 for Scala 2.x
-  export RELEASE_JOB=true;
-fi
+# For normal tags that are cross-built, we release on JDK 8 for Scala 2.x
+isReleaseJob() {
+  if [[ "$ADOPTOPENJDK" == "8" && "$TRAVIS_SCALA_VERSION" =~ ^2\.1[01234]\..*$ ]]; then
+    true
+  else
+    false
+  fi
+}
+
+# For tags that define a Scala version, we pick the jobs of one Scala version (2.13.x) to do the releases
+isTagScalaReleaseJob() {
+  if [[ "$ADOPTOPENJDK" == "8" && "$TRAVIS_SCALA_VERSION" =~ ^2\.13\.[0-9]+$ ]]; then
+    true
+  else
+    false
+  fi
+}
 
 if [[ "$SCALAJS_VERSION" == "" ]]; then
   projectPrefix="moduleTest"
@@ -34,14 +44,19 @@ verPat="[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9-]+)?"
 tagPat="^v$verPat(#$verPat)?$"
 
 if [[ "$TRAVIS_TAG" =~ $tagPat ]]; then
-  if [[ "$RELEASE_JOB" != "true" ]]; then
-    echo "Not releasing on Java $ADOPTOPENJDK with Scala $TRAVIS_SCALA_VERSION"
-    exit 0
+  releaseTask="ci-release"
+  tagScalaVer=$(echo $TRAVIS_TAG | sed s/[^#]*// | sed s/^#//)
+  if [[ "$tagScalaVer" == "" ]]; then
+    if ! isReleaseJob; then
+      echo "Not releasing on Java $ADOPTOPENJDK with Scala $TRAVIS_SCALA_VERSION"
+      exit 0
+    fi
   else
-    releaseTask="ci-release"
-    tagScalaVer=$(echo $TRAVIS_TAG | sed s/[^#]*// | sed s/^#//)
-    if [[ "$tagScalaVer" != "" ]]; then
+    if isTagScalaReleaseJob; then
       setTagScalaVersion='set every scalaVersion := "'$tagScalaVer'"'
+    else
+      echo "The releases for Scala $tagScalaVer are built by other jobs in the travis job matrix"
+      exit 0
     fi
   fi
 fi
