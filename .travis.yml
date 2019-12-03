@@ -25,7 +25,6 @@ env:
 
 before_install:
   # adding $HOME/.sdkman to cache would create an empty directory, which interferes with the initial installation
-  #- set -e
   - "[[ -d $HOME/.sdkman/bin/ ]] || rm -rf $HOME/.sdkman/"
   - curl -sL https://get.sdkman.io | bash
   - echo sdkman_auto_answer=true > $HOME/.sdkman/etc/config
@@ -37,7 +36,7 @@ before_install:
   - unset JAVA_HOME
   - jdkVendorVersion=$(scala -e 'println(System.getProperty("java.vendor") + System.getProperty("java.version"))')
   - if [[ $ADOPTOPENJDK == 8 ]]; then versionPrefix="1\.8" else versionPrefix=$ADOPTOPENJDK; fi
-  - echo $jdkVendorVersion | grep '^AdoptOpenJDK$versionPrefix\.FAIL'
+  - java -version 2>&1 | grep 'AdoptOpenJDK[^0-9]*$versionPrefix\.FAIL'
   - true
 
 install:
