@@ -1,27 +1,27 @@
 language: scala
 
 scala:
-#  - 0.18.1
-#  - 2.12.10
+ - 0.18.1
+ - 2.12.10
   - 2.13.1
 
 env:
   - ADOPTOPENJDK=8     SCALAJS_VERSION=
-#  - ADOPTOPENJDK=8     SCALAJS_VERSION=0.6.29
-#  - ADOPTOPENJDK=8     SCALAJS_VERSION=1.0.0-M8
+ - ADOPTOPENJDK=8     SCALAJS_VERSION=0.6.29
+ - ADOPTOPENJDK=8     SCALAJS_VERSION=1.0.0-M8
   - ADOPTOPENJDK=11    SCALAJS_VERSION=
 
-# matrix:
-#   exclude:
-#     - scala: 0.18.1
-#       env: ADOPTOPENJDK=8     SCALAJS_VERSION=0.6.29
-#     - scala: 0.18.1
-#       env: ADOPTOPENJDK=8     SCALAJS_VERSION=1.0.0-M8
-#   include:
-#     - scala: 2.11.12
-#       env: ADOPTOPENJDK=8     SCALANATIVE_VERSION=0.3.9
-#     - scala: 2.11.12
-#       env: ADOPTOPENJDK=8     SCALANATIVE_VERSION=0.4.0-M2
+matrix:
+  exclude:
+    - scala: 0.18.1
+      env: ADOPTOPENJDK=8     SCALAJS_VERSION=0.6.29
+    - scala: 0.18.1
+      env: ADOPTOPENJDK=8     SCALAJS_VERSION=1.0.0-M8
+  include:
+    - scala: 2.11.12
+      env: ADOPTOPENJDK=8     SCALANATIVE_VERSION=0.3.9
+    - scala: 2.11.12
+      env: ADOPTOPENJDK=8     SCALANATIVE_VERSION=0.4.0-M2
 
 before_install:
   - |
@@ -36,11 +36,8 @@ before_install:
     sdk use java $sdkJava
     unset JAVA_HOME
     if [[ $ADOPTOPENJDK == 8 ]]; then versionPrefix="1\.8"; else versionPrefix=$ADOPTOPENJDK; fi
-    java -version 2>&1 | grep "^.*AdoptOpenJDK[^0-9]*$versionPrefix\..*$" || {
-      java -version
-      echo $sdkJava
-      exit 1
-    }
+    java -version 2>&1 | grep "^.*AdoptOpenJDK[^0-9]*$versionPrefix\..*$" || exit 1
+    java -version
 
 install:
   - git fetch --tags # get all tags for sbt-dynver
