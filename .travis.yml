@@ -34,7 +34,7 @@ before_install:
   - sdk install java $sdkJava || true # install fails if it's already installed
   - sdk use java $sdkJava
   - unset JAVA_HOME
-  - "if [[ $ADOPTOPENJDK == 8 ]]; then versionPrefix="1\.8" else versionPrefix=$ADOPTOPENJDK; fi"
+  - if [[ $ADOPTOPENJDK == 8 ]]; then versionPrefix="1\.8"; else versionPrefix=$ADOPTOPENJDK; fi
   - java -version
   - echo $versionPrefix
   - java -version 2>&1 | grep "AdoptOpenJDK[^0-9]*$versionPrefix\." || { java -version; exit 1 }
