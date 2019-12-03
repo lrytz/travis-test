@@ -37,7 +37,7 @@ before_install:
   - if [[ $ADOPTOPENJDK == 8 ]]; then versionPrefix="1\.8"; else versionPrefix=$ADOPTOPENJDK; fi
   - java -version
   - echo $versionPrefix
-  - java -version 2>&1 | grep "AdoptOpenJDK[^0-9]*$versionPrefix\." || { java -version; exit 1 }
+  - "java -version 2>&1 | grep "AdoptOpenJDK[^0-9]*$versionPrefix\." || { java -version; exit 1 }"
 
 install:
   - git fetch --tags # get all tags for sbt-dynver
