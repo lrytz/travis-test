@@ -24,8 +24,8 @@ env:
 #       env: ADOPTOPENJDK=8     SCALANATIVE_VERSION=0.4.0-M2
 
 before_install:
-  # adding $HOME/.sdkman to cache would create an empty directory, which interferes with the initial installation
   - |
+    # adding $HOME/.sdkman to cache would create an empty directory, which interferes with the initial installation
     [[ -d $HOME/.sdkman/bin/ ]] || rm -rf $HOME/.sdkman/
     curl -sL https://get.sdkman.io | bash
     echo sdkman_auto_answer=true > $HOME/.sdkman/etc/config
@@ -36,8 +36,9 @@ before_install:
     sdk use java $sdkJava
     unset JAVA_HOME
     if [[ $ADOPTOPENJDK == 8 ]]; then versionPrefix="1\.8"; else versionPrefix=$ADOPTOPENJDK; fi
-    java -version 2>&1 | grep "AdoptOpenJDhK[^0-9]*$versionPrefix\." || {
+    java -version 2>&1 | grep "^.*AdoptOpenJDK[^0-9]*$versionPrefix\.$" || {
       java -version
+      echo $sdkJava
       exit 1
     }
 
