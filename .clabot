@@ -1,5 +1,6 @@
 {
   "contributors": [ "lrytz" ],
   "message": "Hi there, please sign the CLA at https://www.lightbend.com/contribute/cla/scala",
+  "label": "",
   "recheckComment": "/synch"
 }
