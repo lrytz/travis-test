@@ -9,7 +9,7 @@ lazy val moduleTest = crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .crossType(CrossType.Full)
   .in(file("."))
   .settings(ScalaModulePlugin.scalaModuleSettings)
-  .jvmSettings(ScalaModulePlugin.scalaModuleSettingsJVM)
+  .jvmSettings(ScalaModulePlugin.scalaModuleOsgiSettings)
   .settings(
     name := "sbt-scala-module-test",
   )
