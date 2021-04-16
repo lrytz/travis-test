@@ -1,56 +1,66 @@
+version: ~> 1.0 # needed for imports
+import: scala/scala-dev:travis/default.yml
+
+dist: xenial  # GPG stuff breaks on bionic; scala/scala-dev#764
 language: scala
 
-scala:
-  - 0.18.1
-  - 2.12.10
-  - 2.13.1
+# env:
+#   - ADOPTOPENJDK=8
+#   - ADOPTOPENJDK=16
+
+stages:
+  - build
+  - test
+
+jobs:
+    include:
+      - stage: build
+        if: type = push
+        name: build on push
+        script:
+          - java -version
+
+      - stage: test
+        if: type = push
+        name: test on push
+        script:
+          - java -version
+
+      - stage: build
+        if: type = pull_request AND env(ADOPTOPENJDK) = 8 OR type = push AND env(ADOPTOPENJDK) = 16
+        name: build on pr / push 16
+        env:
+          - ADOPTOPENJDK=8
+          - ADOPTOPENJDK=16
+        script:
+          - java -version
+          - echo "hai" > file.txt
+        workspaces:
+          create:
+            name: bootstrapped
+            paths:
+              - "file.txt"
+
+      - stage: test
+        if: type = pull_request AND env(ADOPTOPENJDK) = 8 OR type = push AND env(ADOPTOPENJDK) = 16
+        name: test on pr / push 16
+        env:
+          - ADOPTOPENJDK=8
+          - ADOPTOPENJDK=16
+        workspaces:
+          use: bootstrapped
+        script:
+          - java -version
+          - cat file.txt
+
+      - stage: build
+        name: speck
+        language: ruby
+        install:
+          - ruby -v
+        script:
+          - echo "ok"
 
 env:
-  - ADOPTOPENJDK=8     SCALAJS_VERSION=
-  - ADOPTOPENJDK=8     SCALAJS_VERSION=1.1.1
-  - ADOPTOPENJDK=8     SCALAJS_VERSION=0.6.32
-  - ADOPTOPENJDK=11    SCALAJS_VERSION=
-
-matrix:
-  exclude:
-    - scala: 0.18.1
-      env: ADOPTOPENJDK=8     SCALAJS_VERSION=1.1.1
-    - scala: 0.18.1
-      env: ADOPTOPENJDK=8     SCALAJS_VERSION=0.6.32
-  include:
-    - scala: 2.11.12
-      env: ADOPTOPENJDK=8     SCALANATIVE_VERSION=0.3.9
-    - scala: 2.11.12
-      env: ADOPTOPENJDK=8     SCALANATIVE_VERSION=0.4.0-M2
-
-before_install:
-  - |
-    # adding $HOME/.sdkman to cache would create an empty directory, which interferes with the initial installation
-    [[ -d $HOME/.sdkman/bin/ ]] || rm -rf $HOME/.sdkman/
-    curl -sL https://get.sdkman.io | bash
-    echo sdkman_auto_answer=true > $HOME/.sdkman/etc/config
-    echo sdkman_auto_selfupdate=true >> $HOME/.sdkman/etc/config
-    source $HOME/.sdkman/bin/sdkman-init.sh
-    sdkJava=$(sdk list java | grep -o "$ADOPTOPENJDK\.[0-9\.]*hs-adpt" | head -1)
-    sdk install java $sdkJava || true # install fails if it's already installed
-    sdk use java $sdkJava
-    unset JAVA_HOME
-    if [[ $ADOPTOPENJDK == 8 ]]; then versionPrefix="1\.8"; else versionPrefix=$ADOPTOPENJDK; fi
-    java -version 2>&1 | grep "^.*AdoptOpenJDK[^0-9]*$versionPrefix\..*$" || exit 1
-  - java -version
-
-install:
-  - git fetch --tags # get all tags for sbt-dynver
-
-script: ./build.sh
-
-before_cache:
-  - rm -f $HOME/.ivy2/.sbt.ivy.lock
-  - find $HOME/.ivy2/cache     -name "ivydata-*.properties" | xargs rm
-  - find $HOME/.sbt            -name "*.lock"               | xargs rm
-cache:
-  directories:
-    - $HOME/.ivy2/cache
-    - $HOME/.sbt
-    - $HOME/.cache/coursier
-    - $HOME/.sdkman
+  global:
+    - ADOPTOPENJDK=8
