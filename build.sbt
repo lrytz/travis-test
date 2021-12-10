@@ -4,10 +4,9 @@ import sbtcrossproject.CrossPlugin.autoImport.{CrossType, crossProject}
 Compile/sources := Nil
 Test/sources := Nil
 
-lazy val moduleTest = crossProject(JVMPlatform, JSPlatform, NativePlatform)
+lazy val moduleTest = (file(".") / crossProject(JVMPlatform, JSPlatform, NativePlatform)
   .withoutSuffixFor(JVMPlatform)
-  .crossType(CrossType.Full)
-  .in(file("."))
+  .crossType(CrossType.Full))
   .settings(ScalaModulePlugin.scalaModuleSettings)
   .jvmSettings(ScalaModulePlugin.scalaModuleOsgiSettings)
   .settings(
@@ -17,5 +16,5 @@ lazy val moduleTest = crossProject(JVMPlatform, JSPlatform, NativePlatform)
     OsgiKeys.exportPackage := Seq(s"scala.moduletest.*;version=${version.value}"),
   )
   .jsSettings(
-    fork in Test := false // Scala.js cannot run forked tests
+    (Test / fork) := false // Scala.js cannot run forked tests
   )
